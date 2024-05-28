@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AltUserController;
+use App\Http\Controllers\BalanceController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,16 @@ Route::prefix('goals')->group(function(){
     Route::get('/', [GoalController::class, 'index']);
     Route::get('/{id}', [GoalController::class, 'getGoal']);
     Route::put('/{id}/update', [GoalController::class, 'update']);
-    Route::delete('/{id}/update', [GoalController::class, 'update']);
+    Route::delete('/{id}/delete', [GoalController::class, 'delete']);
     Route::post('/create',[GoalController::class,'store']);
+});
+
+
+Route::prefix('balances')->group(function(){
+   Route::get('/', [BalanceController::class, 'index']);
+   Route::post('/create',[BalanceController::class,'store']);
+});
+
+Route::prefix('categories')->group(function(){
+    Route::get('/',[CategoriesController::class,'index']);
 });

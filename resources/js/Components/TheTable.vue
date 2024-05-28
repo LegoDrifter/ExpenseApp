@@ -20,8 +20,8 @@
                 <div class="text-sm font-medium text-gray-900" v-else >{{ item[field] }}</div>
             </td>
             <td class="flex gap-1 justify-items-center my-5 mx-2">
-                <button @click="sendID(item['id'])" class="bg-yellow-500 px-1 py-1 text-white rounded-md">Edit</button>
-                <button class="bg-red-600 px-1 py-1 text-white rounded-md">Delete</button>
+                <button @click="sendID(item['id'],'EDIT')" class="bg-yellow-500 px-2 py-2 text-white rounded-md text-xs">Edit</button>
+                <button @click="sendID(item['id'],'DELETE')" class="bg-red-600 px-2 py-2 text-white rounded-md text-xs">Delete</button>
             </td>
 
 
@@ -48,8 +48,8 @@ export default {
         }
     },
     setup(props,{emit}){
-        function sendID(arg){
-            emit('getID',arg);
+        function sendID(arg,action){
+            emit('getID',arg,action);
         }
 
         return{

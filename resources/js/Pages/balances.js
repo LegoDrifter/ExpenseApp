@@ -108,6 +108,17 @@ export const balances = [
         date: "2024-05-17",
         cycle: 2,
         type: 1
+    },
+    {
+        id: 11,
+        user_id: 5,
+        category_id: 1,
+        wage: 2000,
+        recurring: 1,
+        description: "Bi-weekly paycheck",
+        date: "2024-05-17",
+        cycle: 2,
+        type: 1
     }
 ];
 

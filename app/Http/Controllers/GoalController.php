@@ -54,6 +54,9 @@ class GoalController extends BaseController
         $goal = Goal::find($id);
         if($goal){
             $goal->delete();
+            return $this->ResponseSuccess("Goal deleted");
+        }else{
+            return $this->ResponseError(Goal::all(),null,'Goal not found');
         }
     }
 

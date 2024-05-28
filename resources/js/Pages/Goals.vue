@@ -3,7 +3,7 @@
         <h1 class="text-3xl font-bold text-center my-5">[Goals]</h1>
         <div v-if="isLoading === 'loading'" ><h1>Please wait</h1></div>
 
-        <Table v-else-if="isLoading === 'loaded'" :headers="tableHeaders" :fields="tableFields" :items="goals" @getID="getID" />
+        <Table v-else-if="isLoading === 'loaded'" :headers="tableHeaders" :fields="tableFields" :items="goals" @getID="getID" :key="initialKey"/>
 
         <!-- Inline Form -->
         <modal :show="modal === 'create'" @close="toggleModal('close')">
@@ -11,23 +11,23 @@
                 <h1 class="text-2xl font-bold">Add New Goal</h1>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Title: </label>
-                    <input type="text" name="title" v-model="goalData.title">
+                    <input type="text" class="bg-white" name="title" v-model="goalData.title">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Description: </label>
-                    <input type="text" name="description" v-model="goalData.description">
+                    <input type="text" class="bg-white" name="description" v-model="goalData.description">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Start Date: </label>
-                    <input type="date" class="pl-2" name="start_date" v-model="goalData.start_date">
+                    <input type="date" class="pl-2 bg-white" name="start_date" v-model="goalData.start_date">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Price: </label>
-                    <input type="number" name="price" v-model="goalData.price">
+                    <input type="number" class="bg-white" name="price" v-model="goalData.price">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Initial Budget: </label>
-                    <input type="number" name="initial_budget" v-model="goalData.initial_budget">
+                    <input type="number" class="bg-white" name="initial_budget" v-model="goalData.initial_budget">
                 </div>
                 <div class="flex flex-col">
                     <label class="font-bold">Status: </label>
@@ -45,23 +45,23 @@
                 <h1 class="text-2xl font-bold">Edit Goal</h1>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Title: </label>
-                    <input type="text" name="title" v-model="fetchedGoal.title" value="fetchedGoal.title">
+                    <input type="text" class="bg-white" name="title" v-model="fetchedGoal.title" value="fetchedGoal.title">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Description: </label>
-                    <input type="text" name="description" v-model="fetchedGoal.description" value="fetchedGoal.description">
+                    <input type="text" class="bg-white" name="description" v-model="fetchedGoal.description" value="fetchedGoal.description">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Start Date: </label>
-                    <input type="date" class="pl-2" name="start_date" v-model="fetchedGoal.start_date" value="fetchedGoal.start_date">
+                    <input type="date" class="pl-2 bg-white" name="start_date" v-model="fetchedGoal.start_date" value="fetchedGoal.start_date">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Price: </label>
-                    <input type="number" name="price" v-model="fetchedGoal.price" value="fetchedGoal.price">
+                    <input type="number" name="price" class="bg-white" v-model="fetchedGoal.price" value="fetchedGoal.price">
                 </div>
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Initial Budget: </label>
-                    <input type="number" name="initial_budget" v-model="fetchedGoal.initial_budget" value="fetchedGoal.initial_budget">
+                    <input type="number" class="bg-white" name="initial_budget" v-model="fetchedGoal.initial_budget" value="fetchedGoal.initial_budget">
                 </div>
                 <div class="flex flex-col">
                     <label class="font-bold">Status: </label>
@@ -77,6 +77,7 @@
         <div class="flex gap-4 justify-center my-5">
             <button @click="toggleModal('create')" class="btn-add bg-indigo-600 text-white px-2 py-1 rounded-md">Add Goal</button>
         </div>
+
 
 
     </div>
@@ -109,16 +110,40 @@ export default {
         });
         const isLoading = ref('loading');
         const error = ref(null);
+        const initialKey = ref("initial");
+        const newGoal = {
+            user_id:1,
+            category_id:null,
+            wage:null,
+            recurring:null,
+            description:"",
+            date:null,
+            cycle:null,
+            status:null,
+            type:null,
+        }
 
         const toggleModal = (arg) =>{
             modal.value = arg;
         }
 
-        const getID = (arg) =>{
+        const getID = (arg, action) =>{
             console.log(arg);
+            console.log(action);
             itemID.value = arg;
-            getItem(arg);
-            modal.value = 'edit';
+            if(action === 'EDIT'){
+                getItem(arg);
+                modal.value = 'edit';
+            }else if(action === 'DELETE'){
+                const newArray = goalsList.value.filter(goal => goal.id !== arg);
+                axios.delete(`api/goals/${arg}/delete`).then(response =>{
+                    console.log('Data deleted successfully',response);
+                    goalsList.value = newArray;
+                    initialKey.value = Math.random();
+                }).catch(error =>{
+                    console.error('Error deleting data:',error);
+                })
+            }
         }
 
 
@@ -182,7 +207,8 @@ export default {
             getData,
             isLoading,
             getID,
-            fetchedGoal
+            fetchedGoal,
+            initialKey
         }
     }
 
