@@ -22,9 +22,6 @@ return new class extends Migration
             $table->integer('cycle');
             $table->integer('status');
             $table->integer('type');
-
-
-
             $table->timestamps();
         });
     }

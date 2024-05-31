@@ -14,7 +14,7 @@
                 <v-toolbar
                     flat
                 >
-                    <v-toolbar-title>Balances</v-toolbar-title>
+                    <v-toolbar-title>Incomes</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
@@ -189,8 +189,10 @@
     </div>
 </template>
 <script setup>
+import { mdiAccount } from '@mdi/js'
 </script>
 <script>
+import {balances} from "./balances.js";
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import axios from "axios";
 
@@ -285,6 +287,7 @@ export default {
                 this.errors = error.response.data.errors;
                 console.log(error.response);
             }
+            this.close();
             console.log(this.defaultItem);
         },
 
@@ -307,11 +310,13 @@ export default {
 
         async getData(){
             this.loading = true;
+            console.log(this.loading);
             try{
-             const response = await axios.get('/api/balances');
-             console.log("Balances fetched",response.data);
-             this.items = response.data.data;
-             this.loading = false;
+                const response = await axios.get('/api/balances/incomes');
+                console.log("Balances fetched",response.data);
+                this.items = response.data.data;
+                this.loading = false;
+                console.log(this.loading);
             }catch(error){
                 console.error("Error");
             }
@@ -332,6 +337,7 @@ export default {
 
             console.log(item);
             this.editedIndex = 1;
+            console.log(this.editedItem);
             this.editedItem = Object.assign({}, item)
             console.log(this.editedItem);
             this.dialog = true

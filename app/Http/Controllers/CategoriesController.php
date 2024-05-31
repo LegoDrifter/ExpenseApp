@@ -3,16 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Nette\Schema\ValidationException;
 
-class CategoriesController extends Controller
+class CategoriesController extends BaseController
 {
     //
+
     public function index(){
         return Categories::all();
     }
 
+
     static public function store($title){
+
+        $data = ['title' => $title];
+
+        $rules = [
+            'title' => 'required|unique:categories|max:255',
+        ];
+
+        $validator = Validator::make($data, $rules);
+        if($validator->fails()){
+            return false;
+        }
+
         $lastCategory = Categories::latest('id')->first();
         $newId = $lastCategory ? $lastCategory->id + 1 : 1;
 

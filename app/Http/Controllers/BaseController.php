@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
+    protected $errors = [];
     public function returnData($status, $message, $values=null, $meta=null,$errors=null,$error=200){
         return response()->json(array(
             'status'    =>$status,

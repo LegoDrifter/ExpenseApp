@@ -1,7 +1,9 @@
 <template>
     <div>
         <h1 class="text-3xl font-bold text-center my-5">[Goals]</h1>
-        <div v-if="isLoading === 'loading'" ><h1>Please wait</h1></div>
+        <div v-if="isLoading === 'loading'" class="flex justify-center my-10" >
+            <v-progress-circular indeterminate :size="100"></v-progress-circular>
+        </div>
 
         <Table v-else-if="isLoading === 'loaded'" :headers="tableHeaders" :fields="tableFields" :items="goals" @getID="getID" :key="initialKey"/>
 

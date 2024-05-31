@@ -17,6 +17,16 @@ const routes = [
         path:"/balances",
         component: () => import('./Pages/Balance.vue')
     },
+    {
+        path:"/incomes",
+        component:() => import('./Pages/Income.vue')
+
+    },
+    {
+        path:"/expenses",
+        component:() => import('./Pages/Expense.vue')
+    }
+
 
 ]
 

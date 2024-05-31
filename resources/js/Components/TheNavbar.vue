@@ -6,6 +6,9 @@
                 <div class="ml-6 space-x-4">
                     <router-link to="/goals" class="text-gray-300 hover:text-white">Goals</router-link>
                     <router-link to="/balances" class="text-gray-300 hover:text-white">Balance</router-link>
+                    <router-link to="/incomes" class="text-gray-300 hover:text-white">Incomes</router-link>
+                    <router-link to="/expenses" class="text-gray-300 hover:text-white">Expenses</router-link>
+
                 </div>
             </div>
             <div class="flex items-center space-x-3">

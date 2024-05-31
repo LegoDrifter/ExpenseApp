@@ -34,7 +34,11 @@ Route::prefix('goals')->group(function(){
 
 Route::prefix('balances')->group(function(){
    Route::get('/', [BalanceController::class, 'index']);
+   Route::get('/incomes', [BalanceController::class, 'income']);
+   Route::get('/expenses', [BalanceController::class, 'expense']);
    Route::post('/create',[BalanceController::class,'store']);
+   Route::put('/{id}/update',[BalanceController::class,'update']);
+   Route::delete('/{id}/delete',[BalanceController::class,'delete']);
 });
 
 Route::prefix('categories')->group(function(){
