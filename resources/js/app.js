@@ -1,5 +1,6 @@
 import './bootstrap';
 import router from './router.js'
+import store from "./Store/index.js"
 import {createApp} from "vue";
 import '../css/app.css'
 import '@mdi/font/css/materialdesignicons.css'
@@ -21,4 +22,5 @@ const vuetify = createVuetify({
 
 app.use(router);
 app.use(vuetify);
+app.use(store);
 app.mount("#app");

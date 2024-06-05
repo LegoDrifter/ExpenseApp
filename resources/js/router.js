@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
     {
         path:"/",
-        component: () => import("./Pages/HomeRoute.vue"),
+        component: () => import("./Pages/Dashboard.vue"),
     },
     {
         path:"/test",
@@ -33,6 +33,14 @@ const routes = [
     {
         path:"/schedules",
         component:() => import('./Pages/Schedules.vue')
+    },
+    {
+        path:"/register",
+        component:() => import('./Pages/Register.vue')
+    },
+    {
+        path:"/login",
+        component:() => import('./Pages/Login.vue')
     }
 
 

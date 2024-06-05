@@ -4,7 +4,6 @@
             <div class="flex items-center">
                 <router-link to="/" class="text-white text-lg font-bold">ExpenseTracker</router-link>
                 <div class="ml-6 space-x-4">
-                    <router-link to="/dashboard" class="text-gray-300 hover:text-white">Dashboard</router-link>
                     <router-link to="/goals" class="text-gray-300 hover:text-white">Goals</router-link>
 <!--                    <router-link to="/balances" class="text-gray-300 hover:text-white">Balance</router-link>-->
                     <router-link to="/incomes" class="text-gray-300 hover:text-white">Incomes</router-link>
@@ -21,7 +20,10 @@
 </template>
 
 <script>
+import axios from "axios";
 export default{
     name:'Navbar',
 }
+
+
 </script>

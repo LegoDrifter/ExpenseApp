@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     //
 
-    public function store(Request $request, $admin){
+    public function store(Request $request){
 
         $attributes = $request->validate([
             'username' => ['required', 'unique:users,username', 'max:255', 'min:3'],
@@ -17,14 +17,23 @@ class UserController extends Controller
             'password' => ['required', 'min:6'],
         ]);
 
-//        dd($attributes);
+        $user = new User();
+        $user->username = $attributes['username'];
+        $user->email= $attributes['email'];
+        $user->role = 'admin';
+        $hashedPassword = bcrypt($attributes['password']);
+        $user->password = $hashedPassword;
 
-        $user = User::create($attributes);
+        if($user->save()){
+            $this->ResponseSuccess([
+                'user' => $user,
+                'token' => $user->createToken('API Token of ' . $user->username)->plainTextToken
+            ]);
+            return redirect('/');
 
-
-            return redirect('/admin')->with('success', 'User created');
-
-
+        }else{
+            $this->ResponseError('Something went wrong','User could not be created.');
+        }
     }
 
     public function login(Request $request)
@@ -36,16 +45,23 @@ class UserController extends Controller
 
 
         if(auth()->attempt($attributes)){
-            session()->regenerate();
 
-            return redirect('/admin');
+            $user = auth()->user();
+
+            return $this->ResponseSuccess([
+                'user' => $user,
+                'token' => $user->createToken('API Token of ' . $user->username)->plainTextToken
+            ]);
         }
 
         return back()
             ->withInput()
             ->withErrors([
                 'email' =>'The provided credentials could not be verified.',
-
             ]);
+    }
+
+    public function getUser(Request $request){
+        return auth()->user();
     }
 }

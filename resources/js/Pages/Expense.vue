@@ -174,9 +174,7 @@
 import { mdiAccount } from '@mdi/js'
 </script>
 <script>
-import {balances} from "./balances.js";
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import axios from "axios";
 
 
 export default {

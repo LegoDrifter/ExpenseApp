@@ -89,7 +89,6 @@
 import Table from "../Components/TheTable.vue"; // Adjust the import path as needed
 import Modal from "../Components/TheModal.vue"
 import {ref, onBeforeMount} from 'vue';
-import axios from "axios";
 export default {
     components: {
         Table,

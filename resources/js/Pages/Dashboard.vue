@@ -22,15 +22,19 @@
 
 
 <script setup>
-import {ref, defineComponent} from "vue";
-import axios from "axios";
+import {useStore} from "vuex";
+import {ref, defineComponent, onMounted} from "vue";
 import Month from "../Components/Month.vue"
 const inputYear = ref('');
 const dataIsSent = ref(false);
 const dataArray = ref(null);
+const store = useStore();
 
+function getTestValue(){
+    store.dispatch('printAction')
+}
 
-
+onMounted(getTestValue);
 async function sendYear(){
     console.log(inputYear.value);
 
