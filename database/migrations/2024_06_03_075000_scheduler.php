@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('balances', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('category_id')->constrained('categories');
-            $table->double('wage');
-            $table->string('description')->nullable();
-            $table->date('date')->nullable();
-            $table->integer('status');
-            $table->integer('type');
-            $table->timestamps();
+            $table->string("description");
+            $table->smallInteger("recurring");
+            $table->smallInteger("cycle");
+            $table->smallInteger('cycles_left');
+            $table->smallInteger("type");
+            $table->smallInteger("status")->default(1);
+            $table->double("wage");
+            $table->dateTime("date");
+
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('balances');
+        //
     }
 };

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Balance;
 use App\Models\Categories;
+use App\Models\Goal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -56,20 +57,45 @@ class BalanceController extends BaseController
         return $this->ResponseSuccess($balance,'Balance deleted');
     }
 
+    public function getBalancesByYear($year){
+        $fullStats = [];
+        for($month = 1;$month <= 12; $month++){
+            $expenseObject = new \stdClass();
+            $expenseObject->expenses = Balance::whereYear('date', $year)->where('status',1)->where('type',2)->whereMonth('date', $month)->get();
+            $expenseObject->incomes = Balance::whereYear('date', $year)->where('status',1)->where('type',1)->whereMonth('date', $month)->get();
+            $expenseObject->goals = Goal::whereYear('start_date',$year)->where('status',1)->whereMonth('start_date',$month)->get();
+            $fullStats[$month] = $expenseObject;
+        }
+        return $this->ResponseSuccess($fullStats,"","Successfully fetched balances for given year.");
+    }
+
+//    public function expenseTrack($month){
+//        $expenseObject = new \stdClass();
+//
+//        $expenses = Balance::whereMonth('date',$month)->where('type',2)->where('status',1)->get();
+//        $incomes = Balance::whereMonth('date',$month)->where('type',1)->where('status',1)->get();
+//        $goals = Goal::whereMonth('start_date',$month)->where('status',1)->get();
+//
+//        $expenseObject->expenses = $expenses;
+//        $expenseObject->incomes = $incomes;
+//        $expenseObject->goals = $goals;
+//
+////        dd($expenseObject);
+//
+//        return $this->ResponseSuccess($expenseObject, '','Successfully fetched expenses.');
+//    }
+
 
 
     public function validator(Request $request){
         return $request->validate([
             'description' => ['required', 'string', 'max:255'],
-            'recurring' => ['required'],
             'date' => ['required', 'date'],
             'category' => [''],
             'wage' => ['required', 'numeric'],
-            'cycle' => ['required', 'numeric'],
             'status' => ['numeric'],
             'type' => ['required', 'numeric'],
         ]);
-
 
     }
 
@@ -80,9 +106,7 @@ class BalanceController extends BaseController
         }
         $balance->description = $attributes['description'];
         $balance->wage = $attributes['wage'];
-        $balance->cycle = $attributes['cycle'];
         $balance->status = 1;
-        $balance->recurring = $attributes['recurring'];
         $balance->type = $attributes['type'];
 
         $dateString = $attributes['date'];

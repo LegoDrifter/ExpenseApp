@@ -69,10 +69,6 @@
                                             md="4"
                                             sm="6"
                                         >
-                                            <v-text-field
-                                                v-model="balanceObject.recurring"
-                                                label="Recurring"
-                                            ></v-text-field>
                                         </v-col>
                                         <v-col
                                             cols="12"
@@ -92,16 +88,7 @@
                                             <v-date-input  label="Date input" v-model="balanceObject.date"></v-date-input>
 
                                         </v-col>
-                                        <v-col
-                                            cols="12"
-                                            md="3"
-                                            sm="5"
-                                        >
-                                            <v-text-field
-                                                v-model="balanceObject.cycle"
-                                                label="Cycle"
-                                            ></v-text-field>
-                                        </v-col>
+
                                         <v-col
                                             cols="12"
                                             md="12"
@@ -188,8 +175,7 @@
 
     </div>
 </template>
-<script setup>
-</script>
+
 <script>
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import axios from "axios";
@@ -213,10 +199,8 @@ export default {
             { title: 'User ID', key: 'user_id' },
             { title: 'Category', key: 'category.title' },
             { title: 'Wage', key: 'wage' },
-            { title: 'Recurring', key: 'recurring' },
             { title: 'Description', key: 'description' },
             { title: 'Date', key: 'date' },
-            { title: 'Cycle', key: 'cycle' },
             { title: 'Type', key: 'type' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
@@ -286,6 +270,7 @@ export default {
                 console.log(error.response);
             }
             console.log(this.defaultItem);
+            this.close();
         },
 
         async updateData(){
@@ -346,10 +331,7 @@ export default {
             this.dialogDelete = true
         },
 
-        deleteItemConfirm () {
-            this.balances.splice(this.editedIndex, 1)
-            this.closeDelete()
-        },
+
 
         close () {
             this.dialog = false
@@ -367,14 +349,7 @@ export default {
             })
         },
 
-        save () {
-            if (this.editedIndex > -1) {
-                Object.assign(this.desserts[this.editedIndex], this.editedItem)
-            } else {
-                this.desserts.push(this.editedItem)
-            }
-            this.close()
-        },
+
     },
 }
 </script>

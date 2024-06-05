@@ -4,6 +4,7 @@ use App\Http\Controllers\AltUserController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,14 +32,22 @@ Route::prefix('goals')->group(function(){
     Route::post('/create',[GoalController::class,'store']);
 });
 
-
 Route::prefix('balances')->group(function(){
    Route::get('/', [BalanceController::class, 'index']);
    Route::get('/incomes', [BalanceController::class, 'income']);
    Route::get('/expenses', [BalanceController::class, 'expense']);
    Route::post('/create',[BalanceController::class,'store']);
+   Route::post('/dashboard/{year}',[BalanceController::class,'getBalancesByYear']);
+   Route::get('/dashboard/stats/{month}',[BalanceController::class,'expenseTrack']);
    Route::put('/{id}/update',[BalanceController::class,'update']);
    Route::delete('/{id}/delete',[BalanceController::class,'delete']);
+});
+
+Route::prefix('schedules')->group(function(){
+   Route::get('/', [ScheduleController::class, 'index']);
+   Route::post('/create',[ScheduleController::class,'store']);
+   Route::put('/{id}/update',[ScheduleController::class,'update']);
+   Route::delete('/{id}/delete',[ScheduleController::class,'delete']);
 });
 
 Route::prefix('categories')->group(function(){

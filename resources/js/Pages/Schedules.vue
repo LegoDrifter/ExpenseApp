@@ -14,7 +14,7 @@
                 <v-toolbar
                     flat
                 >
-                    <v-toolbar-title>Incomes</v-toolbar-title>
+                    <v-toolbar-title>Schedules</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
@@ -64,6 +64,26 @@
                                                 label="Wage"
                                             ></v-text-field>
                                         </v-col>
+                                        <v-col
+                                            cols="12"
+                                            md="4"
+                                            sm="6"
+                                        >
+                                            <v-text-field
+                                                v-model="balanceObject.recurring"
+                                                label="Recurring"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                            cols="12"
+                                            md="4"
+                                            sm="6"
+                                        >
+                                            <v-text-field
+                                                v-model="balanceObject.cycle"
+                                                label="Cycle"
+                                            ></v-text-field>
+                                        </v-col>
 
                                         <v-col
                                             cols="12"
@@ -77,7 +97,7 @@
                                         </v-col>
                                         <v-col
                                             cols="12"
-                                            md="5"
+                                            md="6"
                                             sm="7"
                                         >
                                             <v-date-input  label="Date input" v-model="balanceObject.date"></v-date-input>
@@ -117,7 +137,7 @@
                                 <v-btn
                                     color="blue-darken-1"
                                     variant="text"
-                                    @click="formTitle === 'New Balance' ? sendData() : updateData()"
+                                    @click="formTitle === 'New Schedule' ? sendData() : updateData()"
                                 >
                                     Save
                                 </v-btn>
@@ -170,11 +190,10 @@
 
     </div>
 </template>
-<script setup>
-import { mdiAccount } from '@mdi/js'
-</script>
+
+
+
 <script>
-import {balances} from "./balances.js";
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import axios from "axios";
 
@@ -196,10 +215,11 @@ export default {
             { title: 'ID', key: 'id' },
             { title: 'User ID', key: 'user_id' },
             { title: 'Category', key: 'category.title' },
-            { title: 'Wage', key: 'wage' },
             { title: 'Description', key: 'description' },
-            { title: 'Date', key: 'date' },
+            { title: 'Recurring', key: 'recurring' },
+            { title: 'Cycle', key: 'cycle' },
             { title: 'Type', key: 'type' },
+            { title: 'Date', key: 'date' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
         date:null,
@@ -209,7 +229,6 @@ export default {
         editedItem: {
             id: '',
             user_id: '',
-            category:'',
             wage: 0,
             recurring: 0,
             description: '',
@@ -219,10 +238,10 @@ export default {
         },
         defaultItem: {
             user_id: 1,
-            category:'',
+            description:'',
             wage: 0,
+            type:0,
             recurring: 0,
-            description: '',
             date: null,
             cycle: '',
 
@@ -231,10 +250,10 @@ export default {
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'New Balance' : 'Edit Balance'
+            return this.editedIndex === -1 ? 'New Schedule' : 'Edit Schedule'
         },
         balanceObject(){
-            return this.formTitle === 'New Balance' ? this.defaultItem : this.editedItem
+            return this.formTitle === 'New Schedule' ? this.defaultItem : this.editedItem
         },
         tableKeyComp(){
             return this.tableKey;
@@ -256,9 +275,23 @@ export default {
         this.getCategories()
     },
     methods: {
+
+        resetItem(){
+            this.defaultItem = {
+                user_id: 1,
+                description:'',
+                wage: 0,
+                type:0,
+                recurring: 0,
+                date: null,
+                cycle: '',
+            };
+        },
+
+
         async sendData(){
             try{
-                const response = await axios.post('/api/balances/create', this.defaultItem);
+                const response = await axios.post('/api/schedules/create', this.defaultItem);
                 console.log(response);
                 const newItem = response.data.data;
                 this.items.push(newItem);
@@ -268,12 +301,13 @@ export default {
                 console.log(error.response);
             }
             this.close();
+            this.resetItem();
             console.log(this.defaultItem);
         },
 
         async updateData(){
             try{
-                const response = await axios.put(`/api/balances/${this.editedItem.id}/update`, this.editedItem);
+                const response = await axios.put(`/api/schedules/${this.editedItem.id}/update`, this.editedItem);
                 console.log(response.data.data);
                 const newItem = response.data.data;
                 const itemToUpdate = this.items.findIndex(item => item.id === response.data.data.id);
@@ -290,20 +324,18 @@ export default {
 
         async getData(){
             this.loading = true;
-            console.log(this.loading);
             try{
-                const response = await axios.get('/api/balances/incomes');
-                console.log("Balances fetched",response.data);
+                const response = await axios.get('/api/schedules');
+                console.log("Schedules fetched",response.data);
                 this.items = response.data.data;
                 this.loading = false;
-                console.log(this.loading);
             }catch(error){
                 console.error("Error");
             }
         },
 
         deleteData(){
-            axios.delete(`/api/balances/${this.deleteID}/delete`);
+            axios.delete(`/api/schedules/${this.deleteID}/delete`);
             this.items.splice(this.deleteIndex, 1);
             return this.closeDelete();
         },
@@ -317,7 +349,6 @@ export default {
 
             console.log(item);
             this.editedIndex = 1;
-            console.log(this.editedItem);
             this.editedItem = Object.assign({}, item)
             console.log(this.editedItem);
             this.dialog = true
@@ -332,10 +363,7 @@ export default {
             this.dialogDelete = true
         },
 
-        deleteItemConfirm () {
-            this.balances.splice(this.editedIndex, 1)
-            this.closeDelete()
-        },
+
 
         close () {
             this.dialog = false
@@ -353,21 +381,12 @@ export default {
             })
         },
 
-        save () {
-            if (this.editedIndex > -1) {
-                Object.assign(this.desserts[this.editedIndex], this.editedItem)
-            } else {
-                this.desserts.push(this.editedItem)
-            }
-            this.close()
-        },
+
     },
 }
 </script>
 
 
 <style scoped>
-.black-icon{
-    color:black;
-}
+
 </style>

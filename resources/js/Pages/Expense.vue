@@ -64,16 +64,7 @@
                                                 label="Wage"
                                             ></v-text-field>
                                         </v-col>
-                                        <v-col
-                                            cols="12"
-                                            md="4"
-                                            sm="6"
-                                        >
-                                            <v-text-field
-                                                v-model="balanceObject.recurring"
-                                                label="Recurring"
-                                            ></v-text-field>
-                                        </v-col>
+
                                         <v-col
                                             cols="12"
                                             md="4"
@@ -92,16 +83,7 @@
                                             <v-date-input  label="Date input" v-model="balanceObject.date"></v-date-input>
 
                                         </v-col>
-                                        <v-col
-                                            cols="12"
-                                            md="3"
-                                            sm="5"
-                                        >
-                                            <v-text-field
-                                                v-model="balanceObject.cycle"
-                                                label="Cycle"
-                                            ></v-text-field>
-                                        </v-col>
+
                                         <v-col
                                             cols="12"
                                             md="12"
@@ -215,10 +197,8 @@ export default {
             { title: 'User ID', key: 'user_id' },
             { title: 'Category', key: 'category.title' },
             { title: 'Wage', key: 'wage' },
-            { title: 'Recurring', key: 'recurring' },
             { title: 'Description', key: 'description' },
             { title: 'Date', key: 'date' },
-            { title: 'Cycle', key: 'cycle' },
             { title: 'Type', key: 'type' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
