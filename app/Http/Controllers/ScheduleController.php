@@ -6,12 +6,14 @@ use App\Models\Categories;
 use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends BaseController
 {
     //
     public function index(){
-        $data = Schedule::where('status',1)->with('category')->get();
+        $user = Auth::user();
+        $data = Schedule::where('user_id',$user->id)->where('status',1)->with('category')->get();
         return $this->ResponseSuccess($data,"","Schedules fetched");
     }
 
@@ -61,8 +63,9 @@ class ScheduleController extends BaseController
     }
 
     public function attributeSetter(Schedule $schedule, $attributes, $identifier){
+        $user = Auth::user();
         if($identifier == 'CREATE'){
-            $schedule->user_id=1;
+            $schedule->user_id=$user->id;
         }
         $schedule->description = $attributes['description'];
         $schedule->recurring = $attributes['recurring'];

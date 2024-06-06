@@ -30,8 +30,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register',[UserController::class,'store']);
-Route::post('/login',[UserController::class,'login']);
+
+
+
+    Route::post('/register',[UserController::class,'store']);
+    Route::post('/login',[UserController::class,'login']);
+    Route::post('/logout',[UserController::class,'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('goals')->group(function(){

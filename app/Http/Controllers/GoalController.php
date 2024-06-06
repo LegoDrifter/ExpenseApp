@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 class GoalController extends BaseController
 {
     public function index(){
-        return $this->ResponseSuccess(Goal::all());
+        $user = Auth::user();
+        return $this->ResponseSuccess(Goal::where('user_id',$user->id)->where('status',1)->get());
     }
 
     public function getGoal($id){
@@ -72,6 +73,7 @@ class GoalController extends BaseController
     }
 
     public function attributeSetter(Goal $goal,$attributes,$identifier){
+        $user = Auth::user();
         $goal->title = $attributes['title'];
         $goal->description = $attributes['description'];
         $goal->start_date = $attributes['start_date'];
@@ -79,7 +81,7 @@ class GoalController extends BaseController
         $goal->initial_budget = $attributes['initial_budget'];
         $goal->status = $attributes['status'];
         if($identifier == 'CREATE'){
-            $goal->user_id= 1;
+            $goal->user_id= $user->id;
         }
         if($goal->save()) return true;
         else return false;

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "./Store/index.js"
 
 const routes = [
     {
@@ -46,7 +47,17 @@ const routes = [
 
 ]
 
-export default createRouter({
+const router =  createRouter({
     history: createWebHistory(),
     routes,
 });
+
+// router.beforeEach((to, from, next) =>{
+//     // if (!store.getters.isAuthenticated && to.name !== 'Login'){
+//     //     next({name:'Login', query:{redirect:to.fullPath}})
+//     // }else{
+//     //     next();
+//     // }
+// })
+
+export default router;

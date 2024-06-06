@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends BaseController
 {
@@ -59,6 +61,16 @@ class UserController extends BaseController
             ->withErrors([
                 'email' =>'The provided credentials could not be verified.',
             ]);
+    }
+
+    public function logout(Request $request){
+        $userID = $request->id;
+        $token = $request->header('Authorization');
+        if($token){
+           PersonalAccessToken::where('tokenable_id', $userID)->delete();
+            return response()->json(['message' => 'Logged out successfully']);
+        }
+        else return response()->json(['message' => 'Log out failed']);
     }
 
     public function getUser(Request $request){

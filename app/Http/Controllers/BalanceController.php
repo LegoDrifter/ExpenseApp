@@ -7,20 +7,25 @@ use App\Models\Categories;
 use App\Models\Goal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BalanceController extends BaseController
 {
     //
     public function index(){
-        return $this->ResponseSuccess(Balance::where('status',1)->with('category')->get(), "","Successfully fetched balances.");
+
+        $user = auth()->user();
+        return $this->ResponseSuccess(Balance::where('user_id',$user->id)->where('status',1)->with('category')->get(), "","Successfully fetched balances.");
     }
 
     public function income(){
-        return $this->ResponseSuccess(Balance::where('type',1)->with('category')->get(), "","Successfully fetched income.");
+        $user = Auth::user();
+        return $this->ResponseSuccess(Balance::where('user_id',$user->id)->where('type',1)->with('category')->get(), "",$user);
     }
 
     public function expense(){
-        return $this->ResponseSuccess(Balance::where('type',2)->with('category')->get(), "","Successfully fetched income.");
+        $user = Auth::user();
+        return $this->ResponseSuccess(Balance::where('user_id',$user->id)->where('type',2)->with('category')->get(), "","Successfully fetched income.");
     }
 
     public function store(Request $request){
@@ -100,8 +105,9 @@ class BalanceController extends BaseController
     }
 
     public function attributeSetter(Balance $balance,$attributes,$identifier){
+        $user = Auth::user();
         if($identifier = 'CREATE'){
-            $balance->user_id = 1;
+            $balance->user_id = $user->id;
             //TODO CHANGE TO USER WHO IS LOGGED IN ATM
         }
         $balance->description = $attributes['description'];

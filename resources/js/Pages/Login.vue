@@ -17,13 +17,14 @@
 </template>
 
 <script setup>
+import {useRouter} from 'vue-router';
+import {useStore} from "vuex";
 import {ref} from 'vue';
 const email = ref("");
 const password = ref(null);
-// function test(){
-//     console.log(email.value);
-//     console.log(password.value);
-// }
+const router = useRouter();
+const store = useStore();
+
 async function sendLogin(){
     try{
         const response = await axios.post('/api/login',{
@@ -31,10 +32,14 @@ async function sendLogin(){
             password:password.value
         });
         const {user,token} = response.data.data;
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token',token);
+        store.dispatch("setCredentials",{
+            token:token,
+            user:user,
+        })
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+        router.push('/');
     }catch(error){
         console.error(error);
     }
