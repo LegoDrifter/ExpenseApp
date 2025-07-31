@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="loading" class="flex justify-center my-10" >
-            <v-progress-circular indeterminate :size="100"></v-progress-circular>
+        <div v-if="loading" class="flex justify-center my-40" >
+            <v-progress-circular indeterminate :size="120" color="slateGray"></v-progress-circular>
         </div>
         <v-data-table
             v-else
@@ -14,7 +14,7 @@
                 <v-toolbar
                     flat
                 >
-                    <v-toolbar-title>Expenses</v-toolbar-title>
+                    <v-toolbar-title><span class="font-oswald text-slateGray  font-bold text-2xl">Expenses</span></v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
@@ -26,18 +26,11 @@
                         max-width="500px"
                     >
                         <template v-slot:activator="{ props }">
-                            <v-btn
-                                class="mb-2"
-                                color="primary"
-                                dark
-                                v-bind="props"
-                            >
-                                New Item
-                            </v-btn>
+                               <button v-bind="props" :disabled="dataLoaded !== 2" class="bg-white px-2 py-1 rounded-md font-bold mr-5">+ Add</button>
                         </template>
                         <v-card>
                             <v-card-title>
-                                <span class="text-h5">{{ formTitle }}</span>
+                                <span class="flex justify-center text-2xl mt-4 font-oswald text-slateGray">{{ formTitle }}</span>
                             </v-card-title>
 
                             <v-card-text>
@@ -45,7 +38,7 @@
                                     <v-row>
                                         <v-col
                                             cols="12"
-                                            md="4"
+                                            md="6"
                                             sm="6"
                                         >
                                             <v-combobox
@@ -56,7 +49,18 @@
                                         </v-col>
                                         <v-col
                                             cols="12"
-                                            md="4"
+                                            md="6"
+                                            sm="6"
+                                        >
+                                            <v-combobox
+                                                label="Sub Category"
+                                                :items="subCategories"
+                                                v-model="balanceObject.sub_category"
+                                            ></v-combobox>
+                                        </v-col>
+                                        <v-col
+                                            cols="12"
+                                            md="6"
                                             sm="6"
                                         >
                                             <v-text-field
@@ -66,18 +70,8 @@
                                         </v-col>
 
                                         <v-col
-                                            cols="12"
-                                            md="4"
-                                            sm="6"
-                                        >
-                                            <v-text-field
-                                                v-model="balanceObject.type"
-                                                label="Type"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col
-                                            cols="12"
-                                            md="5"
+                                            cols="10"
+                                            md="6"
                                             sm="7"
                                         >
                                             <v-date-input  label="Date input" v-model="balanceObject.date"></v-date-input>
@@ -97,7 +91,7 @@
                                         </v-col>
                                         <div v-if="errors" class="ml-3">
                                             <p v-for="error in errors" class="text-red-500">
-                                                {{error[0]}}
+                                                {{error}}
                                             </p>
                                         </div>
                                     </v-row>
@@ -158,20 +152,13 @@
                     mdi-delete
                 </v-icon>
             </template>
-            <template v-slot:no-data>
-                <v-btn
-                    color="primary"
-                    @click="initialize"
-                >
-                    Reset
-                </v-btn>
-            </template>
         </v-data-table>
 
     </div>
 </template>
 <script setup>
 import { mdiAccount } from '@mdi/js'
+
 </script>
 <script>
 import { VDateInput } from 'vuetify/labs/VDateInput'
@@ -184,46 +171,47 @@ export default {
     data: () => ({
         dialog: false,
         items: null,
+        todayDate:null,
         categories:null,
         loading:null,
         dialogDelete: false,
         tableKey:1,
+        errorFlag:false,
         errors:null,
         headers: [
-
-            { title: 'ID', key: 'id' },
-            { title: 'User ID', key: 'user_id' },
+            // { title: 'ID', key: 'id' },
+            // { title: 'User ID', key: 'user_id' },
             { title: 'Category', key: 'category.title' },
             { title: 'Wage', key: 'wage' },
+            {title:'Sub Category', key:'sub_category.title'},
             { title: 'Description', key: 'description' },
             { title: 'Date', key: 'date' },
-            { title: 'Type', key: 'type' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
         date:null,
         editedIndex: -1,
         deleteIndex:-1,
+        subCategories:null,
+        dataLoaded:0,
         deleteID:null,
         editedItem: {
             id: '',
             user_id: '',
-            category:'',
+            category:null,
+            sub_category:null,
             wage: 0,
-            recurring: 0,
             description: '',
             date: '',
-            cycle: '',
-            type: '',
+            type: 1,
         },
         defaultItem: {
             user_id: 1,
-            category:'',
+            category:null,
+            sub_category:null,
             wage: 0,
-            recurring: 0,
             description: '',
-            date: null,
-            cycle: '',
-
+            date: '',
+            type:1
         },
     }),
 
@@ -236,6 +224,9 @@ export default {
         },
         tableKeyComp(){
             return this.tableKey;
+        },
+        dateToday(){
+            return this.getTodayDate();
         }
 
     },
@@ -256,21 +247,51 @@ export default {
     methods: {
         async sendData(){
             try{
+                const date = new Date(this.defaultItem.date);
+                this.defaultItem.date = date.toLocaleDateString('en-CA');
                 const response = await axios.post('/api/balances/create', this.defaultItem);
                 console.log(response);
                 const newItem = response.data.data;
                 this.items.push(newItem);
+                this.errorFlag = false;
+                this.errors = null;
+                this.resetForm();
 
             }catch(error){
                 this.errors = error.response.data.errors;
+                this.errorFlag = true;
                 console.log(error.response);
             }
-            this.close();
-            console.log(this.defaultItem);
+            if(this.errorFlag === false){
+                this.close();
+
+            }
+        },
+
+
+        resetForm(){
+            this.defaultItem.category = null;
+            this.defaultItem.subCategory = null;
+            this.defaultItem.wage = 0;
+            this.defaultItem.date = null;
+            this.defaultItem.type = 1;
+            this.defaultItem.description = '';
+        },
+
+        formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
         },
 
         async updateData(){
             try{
+                if (this.editedItem.date) {
+                    this.editedItem.date = this.formatDate(this.editedItem.date);
+                }
+                // const date = new Date(this.editedItem.date);
+                // this.editedItem.date = date.toLocaleDateString('en-CA');
                 const response = await axios.put(`/api/balances/${this.editedItem.id}/update`, this.editedItem);
                 console.log(response.data.data);
                 const newItem = response.data.data;
@@ -292,11 +313,21 @@ export default {
                 const response = await axios.get('/api/balances/expenses');
                 console.log("Balances fetched",response.data);
                 this.items = response.data.data;
+                this.defaultItem.date =  this.getTodayDate();
                 this.loading = false;
+                this.dataLoaded += 1;
             }catch(error){
                 console.error("Error");
             }
         },
+        getTodayDate() {
+            return new Date();
+    // const today = new Date();
+    // const day = String(today.getDate()).padStart(2, '0');
+    // const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    // const year = today.getFullYear();
+    // return `${day}/${month}/${year}`;
+},
 
         deleteData(){
             axios.delete(`/api/balances/${this.deleteID}/delete`);
@@ -306,7 +337,14 @@ export default {
 
         async getCategories(){
             const response = await axios.get('/api/categories')
+            const response2 = await axios.get('/api/categories/exp')
+
+            this.subCategories = response2.data;
             this.categories = response.data;
+            this.categories = this.categories.filter((item) => {
+                return item.title !== 'Income';
+            })
+            this.dataLoaded+=1;
         },
 
         editItem (item) {
@@ -315,6 +353,9 @@ export default {
             this.editedIndex = 1;
             console.log(this.editedItem);
             this.editedItem = Object.assign({}, item)
+            if (typeof this.balanceObject.date === 'string') {
+                this.balanceObject.date = new Date(this.balanceObject.date);
+            }
             console.log(this.editedItem);
             this.dialog = true
         },

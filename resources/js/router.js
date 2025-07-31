@@ -3,8 +3,16 @@ import store from "./Store/index.js"
 
 const routes = [
     {
-        path:"/",
-        component: () => import("./Pages/Dashboard.vue"),
+      path:"/",
+      component:()=> import("./Pages/Dashboard.vue")
+    },
+    {
+      path:"/test",
+      component:() => import("./Pages/TestRoute.vue")
+    },
+    {
+        path:"/details",
+        component: () => import("./Pages/Details.vue"),
     },
     {
         path:"/test",
@@ -12,7 +20,7 @@ const routes = [
     },
     {
         path:"/goals",
-        component: () => import('./Pages/Goals.vue')
+        component: () => import('./Pages/GoalsCard.vue')
     },
     {
         path:"/balances",
@@ -29,7 +37,7 @@ const routes = [
     },
     {
         path:"/dashboard",
-        component:() => import('./Pages/Dashboard.vue')
+        component:() => import('./Pages/Details.vue')
     },
     {
         path:"/schedules",
@@ -42,6 +50,18 @@ const routes = [
     {
         path:"/login",
         component:() => import('./Pages/Login.vue')
+    },
+    {
+        path:"/settings",
+        component:() => import('./Pages/Settings.vue')
+    },
+    {
+        path:"/demo",
+        component:() =>import('./Pages/Demo.vue')
+    },
+    {
+        path:"/profile",
+        component:()=>import('./Pages/ProfilePage.vue')
     }
 
 
@@ -52,12 +72,13 @@ const router =  createRouter({
     routes,
 });
 
-// router.beforeEach((to, from, next) =>{
-//     // if (!store.getters.isAuthenticated && to.name !== 'Login'){
-//     //     next({name:'Login', query:{redirect:to.fullPath}})
-//     // }else{
-//     //     next();
-//     // }
-// })
+router.beforeEach((to, from, next) =>{
+    if (!store.getters.isAuthenticated && to.path !== '/register'  && to.path !== '/login' && to.path !== '/demo'){
+        console.log("You are not authenticated.");
+        next('/register');
+    } else {
+        next();
+    }
+})
 
 export default router;

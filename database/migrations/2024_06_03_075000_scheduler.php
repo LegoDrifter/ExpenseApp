@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('category_id')->constrained('categories');
             $table->string("description");
             $table->smallInteger("recurring");
             $table->smallInteger("cycle");
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->smallInteger("type");
             $table->smallInteger("status")->default(1);
             $table->double("wage");
-            $table->dateTime("date");
+            $table->date("date");
 
         });
     }

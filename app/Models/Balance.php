@@ -19,4 +19,9 @@ class Balance extends Model
         return $this->belongsTo(Categories::class);
     }
 
+    public function sub_category()
+    {
+        return $this->belongsTo(Categories::class, 'subCategory_id');
+    }
+
 }

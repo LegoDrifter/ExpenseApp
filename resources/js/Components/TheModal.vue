@@ -1,9 +1,14 @@
 <template>
-    <transition name="fade">
-        <div v-if="show" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center rounded-lg">
-            <div class="bg-white p-6 rounded shadow-lg max-w-lg w-full">
+    <transition       enter-active-class="transition-transform duration-1000"
+                      enter-from-class="transform -translate-x-full"
+                      enter-to-class="transform translate-x-0"
+                      leave-active-class="transition-opacity duration-500"
+                      leave-from-class="opacity-100"
+                      leave-to-class="opacity-0">
+        <div v-if="show" class="fixed inset-0  bg-opacity-50 flex items-center justify-center rounded-lg">
+            <div class="bg-white relative p-6 rounded shadow-2xl max-w-lg lg:max-w-4xl w-full">
+                <button @click="close" class="absolute top-2 left-2 bg-slateGray text-white px-2 py-1 rounded-full">X</button>
                 <slot></slot>
-                <button @click="close" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
             </div>
         </div>
     </transition>
@@ -35,7 +40,7 @@ export default{
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+.fade-enter, .fade-leave-to {
     opacity: 0;
 }
 </style>

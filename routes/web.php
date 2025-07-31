@@ -15,19 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-//Route::prefix('users')->group(function () {
-//    Route::get('/{id}',[AltUserController::class,'getUser']);
-//});
-
-Route::prefix('goals')->group(function(){
-    Route::post('/create',[GoalController::class,'store']);
-});
-
 
 Route::get('/{any}', function () {
     return view('welcome');
-})->where('any', '^(?!api|public).*$');
+})->where('any', '^(?!api|public|build).*$');

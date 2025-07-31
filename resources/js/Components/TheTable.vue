@@ -20,6 +20,7 @@
                 <div class="text-sm font-medium text-gray-900" v-else >{{ item[field] }}</div>
             </td>
             <td class="flex gap-1 justify-items-center my-5 mx-2">
+<!--                <button   :disabled="checkGoal(item.)" class="px-2 py-2 bg-green-500 text-white rounded-md">Finish</button>-->
                 <button @click="sendID(item['id'],'EDIT')" class="bg-yellow-500 px-2 py-2 text-white rounded-md text-xs">Edit</button>
                 <button @click="sendID(item['id'],'DELETE')" class="bg-red-600 px-2 py-2 text-white rounded-md text-xs">Delete</button>
             </td>
@@ -50,6 +51,14 @@ export default {
     setup(props,{emit}){
         function sendID(arg,action){
             emit('getID',arg,action);
+        }
+
+        function checkGoalFinished(){
+            try{
+                const response = axios.get("")
+            }catch(error){
+
+            }
         }
 
         return{

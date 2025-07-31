@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('user');
+            $table->double('salary')->default(0);
             $table->double('budget')->nullable();
             $table->double('balance')->nullable();
+            $table->double('totalIncome')->nullable();
+            $table->double('totalExpense')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });

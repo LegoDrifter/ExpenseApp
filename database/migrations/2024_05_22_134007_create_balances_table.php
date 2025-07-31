@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('category_id')->constrained('categories');
+            $table->foreignId('subCategory_id')->nullable()->constrained('categories');
             $table->double('wage');
             $table->string('description')->nullable();
             $table->date('date')->nullable();

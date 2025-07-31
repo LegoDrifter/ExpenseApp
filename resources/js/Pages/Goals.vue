@@ -23,6 +23,7 @@
                     <label class="mb-2 font-bold">Start Date: </label>
                     <input type="date" class="pl-2 bg-white" name="start_date" v-model="goalData.start_date">
                 </div>
+
                 <div class="flex flex-col">
                     <label class="mb-2 font-bold">Price: </label>
                     <input type="number" class="bg-white" name="price" v-model="goalData.price">
@@ -68,9 +69,9 @@
                 <div class="flex flex-col">
                     <label class="font-bold">Status: </label>
                     <select name="status"  v-model="fetchedGoal.status"  class="block w-full px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:border-blue-400">
-                        <option value="0">Planned</option>
+                        <option value="1">Planned</option>
                         <option value="2">Completed</option>
-                        <option value="1">In Progress</option>
+                        <option value="3">In Progress</option>
                     </select>
                 </div>
                 <button @click="sendData('UPDATE')" type="submit" class="px-2 py-1 font-bold">Edit</button>
@@ -95,8 +96,8 @@ export default {
         Modal
     },
     setup(){
-        const tableHeaders = ["Title", "Description", "Start Date", "Price", "Initial Budget", "Status", "Action"];
-        const tableFields = ["title", "description", "start_date", "price", "initial_budget", "status"];
+        const tableHeaders = ["Title", "Description", "Start Date","End Date", "Price", "Initial Budget", "Status", "Action"];
+        const tableFields = ["title", "description", "start_date","end_date", "price", "initial_budget", "status"];
         const goalsList = ref();
         const modal = ref('close');
         const fetchedGoal = ref();
@@ -105,6 +106,7 @@ export default {
             title:'',
             description:'',
             start_date:'',
+            end_date:'',
             price:null,
             initial_budget:null,
             status:null,
@@ -183,8 +185,9 @@ export default {
             console.log(isLoading.value);
             try{
                 const response = await axios.get('api/goals');
-                console.log("Goals fetched.", response.data.data);
-                goalsList.value = response.data.data;
+                // console.log(response);
+                console.log("Goals fetched.", response.data);
+                goalsList.value = response.data;
                 isLoading.value = 'loaded';
                 console.log(isLoading.value);
 

@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule): void
     {
-         $schedule->command('custom-task')->everySecond();
+         $schedule->command('custom-task')->everyMinute();
     }
 
     /**

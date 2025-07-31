@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId("user_id")->constrained("users");
             $table->string('title');
+            $table->date('end_date')->nullable();
             $table->text('description');
             $table->date("start_date");
             $table->double('price');
-            $table->double('initial_budget')->nullable();
+            $table->double('initial_budget');
             $table->integer('status')->default(1);
             $table->timestamps();
         });

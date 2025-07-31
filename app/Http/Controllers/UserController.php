@@ -22,16 +22,15 @@ class UserController extends BaseController
         $user = new User();
         $user->username = $attributes['username'];
         $user->email= $attributes['email'];
-        $user->role = 'admin';
+        $user->role = 'user';
         $hashedPassword = bcrypt($attributes['password']);
         $user->password = $hashedPassword;
 
         if($user->save()){
-            $this->ResponseSuccess([
+            return $this->ResponseSuccess([
                 'user' => $user,
                 'token' => $user->createToken('API Token of ' . $user->username)->plainTextToken
             ]);
-            return redirect('/');
 
         }else{
             $this->ResponseError('Something went wrong','User could not be created.');
@@ -56,11 +55,7 @@ class UserController extends BaseController
             ]);
         }
 
-        return back()
-            ->withInput()
-            ->withErrors([
-                'email' =>'The provided credentials could not be verified.',
-            ]);
+        return $this->ResponseError('The provided credentials are incorrect.');
     }
 
     public function logout(Request $request){
@@ -73,7 +68,24 @@ class UserController extends BaseController
         else return response()->json(['message' => 'Log out failed']);
     }
 
-    public function getUser(Request $request){
-        return auth()->user();
+    public function getUser($id){
+
+        $user = User::find($id);
+
+        // Check if user exists
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Return user data as JSON response
+        return response()->json($user);
+    }
+
+    public function updateBudget(Request $request){
+        $user = Auth::user();
+        $amount = $request['amount'];
+        $user->budget = $amount;
+        $user->save();
+        return response()->json($user);
     }
 }

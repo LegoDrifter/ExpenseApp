@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->integer('status')->default(1);
+            $table->integer('percentage')->default(0);
+            $table->integer('parent_id')->default(null);
             $table->timestamps();
+
+
         });
     }
 
